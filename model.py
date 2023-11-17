@@ -1,15 +1,6 @@
-###时间——空间——时间###
 
-# Model input:  (*, num_of_timesteps, num_of_vertices, num_of_features)
-#
-#     V: num_of_vertices
-#     T: num_of_timesteps
-#     F: num_of_features
-#
-# Model output: (*, 5)
-#
-#     5: 5 sleep stages
-#  是为了确定卷积层、和卷积核的大小
+
+
 import numpy as np
 import torch
 import torch.nn as nn
@@ -22,12 +13,8 @@ from torch.nn.functional import conv2d
 DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 
-#
-# #
-# DEVICE = torch.device("cpu")
 
 
-####################时间注意力机制###############################
 
 
 class TemporalAttention(nn.Module):
@@ -92,7 +79,7 @@ class TemporalAttention(nn.Module):
 # out = model(inputs)
 # print(out.shape)
 
-###########################################空间注意力机制#######################################
+
 
 def reshape_dot(x, TATT):
     outs = torch.matmul((x.permute(0, 2, 3, 1))
@@ -154,7 +141,7 @@ class SpatialAttention(nn.Module):
         return S_normalized  # torch.Size([2, 26, 26])
 
 
-################K-order static GCN###################
+
 class cheb_conv_with_SAt_static(nn.Module):
     '''
         K-order chebyshev graph convolution with static graph structure

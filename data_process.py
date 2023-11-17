@@ -15,13 +15,12 @@ from scipy.special import chebyt
 
 # from k_order import  chebyshev_polynomials
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
-###############################################固定随机数种子####################################
 seed = 7
-torch.manual_seed(seed)  # 为CPU设置随机种子
-torch.cuda.manual_seed(seed)  # 为当前GPU设置随机种子
-torch.cuda.manual_seed_all(seed)  # if you are using multi-GPU，为所有GPU设置随机种子
-np.random.seed(seed)  # Numpy module.
-random.seed(seed)  # Python random module.
+torch.manual_seed(seed)
+torch.cuda.manual_seed(seed)
+torch.cuda.manual_seed_all(seed)
+np.random.seed(seed)
+random.seed(seed)
 
 
 # 82,76,68
@@ -30,7 +29,7 @@ def MaxMinNormalization(x, Max, Min):
     return x
 
 
-# ########################################classificatin task:  NC  vs. SMC&EMCI########################################
+# ########################################classificatin task: NC  vs. SMC&EMCI########################################
 # from torch.utils.data import Dataset, DataLoader
 #
 # m = loadmat('.\datasets\ADNI_fmri.mat')  # fmri
@@ -51,7 +50,7 @@ def MaxMinNormalization(x, Max, Min):
 # ddata = n[keysn[3]]  #Structural brain network
 
 
-# ########################################classificatin task:  NC vs. SMC########################################
+# ########################################classificatin task: NC vs. SMC########################################
 # from torch.utils.data import Dataset, DataLoader
 # m = loadmat('.\datasets\ADNI_fmri.mat')  # fmri
 # keysm = list(m.keys())
@@ -72,7 +71,7 @@ def MaxMinNormalization(x, Max, Min):
 # ddata = n[keysn[3]][0:158]#Structural brain network
 
 
-# ########################################classificatin task:  NC vs. EMCI########################################
+# ########################################classificatin task: NC vs. EMCI########################################
 # from torch.utils.data import Dataset, DataLoader
 #
 # m = loadmat('.\datasets\ADNI_fmri.mat')  # fmri
@@ -97,7 +96,7 @@ def MaxMinNormalization(x, Max, Min):
 # ddata = torch.cat((torch.tensor(ddata[0:82]), torch.tensor(ddata[158:226])))
 # ddata = ddata.numpy() #Structural brain network
 
-################################# 获取数据集    SMC  vs   EMCI########################################
+#################################classificatin task: SMC  vs   EMCI########################################
 from torch.utils.data import Dataset, DataLoader
 
 m = loadmat('.\datasets\ADNI_fmri.mat')
@@ -254,8 +253,6 @@ ot_net_all = creat_ot_briannet(nets_all, ddata)
 chebs = snet(ddata, 2)
 
 
-
-#############################################定义数据######################################
 class ADNI(Dataset):
     def __init__(self):
         super(ADNI, self).__init__()

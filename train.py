@@ -3,22 +3,18 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 import warnings
-
 warnings.filterwarnings("ignore")
-# 固定随机数种子
 from sklearn.metrics import precision_score, recall_score, f1_score, roc_auc_score, accuracy_score, confusion_matrix
 from sklearn.model_selection import KFold
 from torch.utils.data import SubsetRandomSampler, DataLoader
 import warnings
-
 from data_process import ADNI
 from model import STGCN_model
 
-warnings.filterwarnings("ignore")
 
 
-# 定义常量
-k = 3  # 阶数
+
+k = 3
 num_of_timesteps = 5
 num_of_chev_filters = 45
 num_of_time_filters = 10
@@ -41,30 +37,22 @@ gailv_ten = []
 
 kk = 10
 
-
-# 定义测试函数
-# 定义测试函数
 def stest(model, datasets_test):
-    # 在测试集上检验效果
     eval_loss = 0
     eval_acc = 0
     pre_all = []
     labels_all = []
     gailv_all = []
     pro_all = []
-    model.eval()  # 将模型改为预测模式
+    model.eval()
     for net, data_feas, label in datasets_test:
         net, data_feas, label = net.to(DEVICE), data_feas.to(DEVICE), label.to(DEVICE)
         net = net.float()
         data_feas = data_feas.float()
-
         label = label.long()
         outs = model(net, data_feas)
-
         losss = F.nll_loss(outs, label)
-        # 记录误差
         eval_loss += float(losss)
-        # 记录准确率
         gailv, pred = outs.max(1)
         num_correct = (pred == label).sum()
         acc = int(num_correct) / net.shape[0]
@@ -85,8 +73,6 @@ def stest(model, datasets_test):
 
     return eval_loss, eval_acc, eval_acc_epoch, precision, recall, f1, my_auc, sensitivity, specificity, pre_all, labels_all, pro_all
 
-
-# 获取数据集、划分数据集，开始训练和测试
 i = 0
 test_acc = []
 test_pre = []
@@ -98,8 +84,8 @@ test_sens = []
 test_spec = []
 pro_ten = []
 dataset = ADNI()
-train_ratio = 0.8  # 训练集的80%用于训练
-valid_ratio = 0.2  # 训练集的20%用于验证
+train_ratio = 0.8
+valid_ratio = 0.2
 KF = KFold(n_splits=10, shuffle=True)
 for train_idx, test_idx in KF.split(dataset):
     train_size = int(train_ratio * len(train_idx))
@@ -109,7 +95,7 @@ for train_idx, test_idx in KF.split(dataset):
     datasets_valid = DataLoader(dataset, batch_size=20, shuffle=False, sampler=SubsetRandomSampler(valid_indices))
     datasets_test = DataLoader(dataset, batch_size=20, shuffle=False, sampler=SubsetRandomSampler(test_idx))
     epoch = 300
-    losses = []  # 记录训练误差，用于作图分析
+    losses = []
     acces = []
     eval_losses = []
     eval_acces = []
@@ -127,15 +113,11 @@ for train_idx, test_idx in KF.split(dataset):
         model.train()
         for ot_net, cheb, label in datasets_train:
             ot_net, cheb, label = ot_net.to(DEVICE), cheb.to(DEVICE), label.to(DEVICE)
-            # 前向传播
-
             ot_net = ot_net.float()
             cheb = cheb.float()
             label = label.long()
-
             out = model(ot_net, cheb)  # torch.Size([4, 3])
             loss = F.nll_loss(out, label)
-            # 反向传播
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
@@ -228,6 +210,5 @@ print("auc_std", auc_std)
 print("sens_std", sens_std)
 print("spec_std", spec_std)
 print("*****************************************************")
-
 print(label_ten)
 print(pro_ten)
