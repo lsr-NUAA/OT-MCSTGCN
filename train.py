@@ -55,9 +55,7 @@ def stest(model, datasets_test):
         outs = model(net, data_feas)
 
         losss = F.nll_loss(outs, label)
-        # 记录误差
         eval_loss += float(losss)
-        # 记录准确率
         gailv, pred = outs.max(1)
         num_correct = (pred == label).sum()
         acc = int(num_correct) / net.shape[0]
@@ -127,7 +125,6 @@ for train_idx, test_idx in KF.split(dataset):
 
             out = model(ot_net, cheb)  # torch.Size([4, 3])
             loss = F.nll_loss(out, label)
-            # 反向传播
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()

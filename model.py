@@ -147,7 +147,6 @@ class cheb_conv_with_SAt_static(nn.Module):
                  SAtt(batch_size, num_of_vertices, num_of_vertices)]
         Output: (batch_size, num_of_timesteps, num_of_vertices, num_of_filters)
 
-        K 阶   num_of_features：输入通道  self.num_of_filters: 输出通道
     '''
 
     def __init__(self, num_of_filters, k, num_of_timesteps, num_of_vertices, num_of_features):
