@@ -15,6 +15,7 @@ from scipy.special import chebyt
 
 # from k_order import  chebyshev_polynomials
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
+
 seed = 7
 torch.manual_seed(seed)
 torch.cuda.manual_seed(seed)
@@ -96,7 +97,7 @@ def MaxMinNormalization(x, Max, Min):
 # ddata = torch.cat((torch.tensor(ddata[0:82]), torch.tensor(ddata[158:226])))
 # ddata = ddata.numpy() #Structural brain network
 
-#################################classificatin task: SMC  vs   EMCI########################################
+###################################### classificatin task: SMC  vs   EMCI########################################
 from torch.utils.data import Dataset, DataLoader
 
 m = loadmat('.\datasets\ADNI_fmri.mat')
@@ -118,7 +119,7 @@ n = loadmat('.\datasets\ADNI_DTI.mat')  # DTI
 keysn = list(n.keys())
 ddata = n[keysn[3]][82:226]  # Structural brain network
 
-# 对应打乱数据集
+
 index = [i for i in range(fdata.shape[0])]
 np.random.shuffle(index)
 fdata = fdata[index]
@@ -248,9 +249,11 @@ def snet(ddata, k):
     return alls
 
 
-nets_all = create_DFCN(fdata, 5, 0.65)
+nets_all = create_DFCN(fdata, 6, 0.65)
 ot_net_all = creat_ot_briannet(nets_all, ddata)
 chebs = snet(ddata, 2)
+
+
 
 
 class ADNI(Dataset):

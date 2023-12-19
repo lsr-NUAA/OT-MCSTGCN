@@ -1,6 +1,4 @@
 
-
-
 import numpy as np
 import torch
 import torch.nn as nn
@@ -11,7 +9,6 @@ from torch.nn.functional import conv2d
 
 #
 DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-
 
 
 
@@ -141,7 +138,7 @@ class SpatialAttention(nn.Module):
         return S_normalized  # torch.Size([2, 26, 26])
 
 
-
+################K-order static GCN###################
 class cheb_conv_with_SAt_static(nn.Module):
     '''
         K-order chebyshev graph convolution with static graph structure
@@ -245,7 +242,7 @@ class san_stgcn(nn.Module):
         self.t2 = nn.Conv2d(self.num_of_timesteps, 1, 3, 1)
 
     def forward(self, x, che):
-        # TemporalAttention 时间注意力
+        # TemporalAttention 
         # output shape is (batch_size, T, T)
         temporal_Att = self.temporal_At(x)
         x_TAt = reshape_dot(x, temporal_Att)
@@ -329,5 +326,5 @@ out = model(sample_shape, cheb_polynomials)
 
 flops, params = profile(model, (sample_shape, cheb_polynomials,))
 print('flops: ', flops, 'params: ', params)
-print('flops: %.3f M, params: %.3f M' % (flops / 1000000.0, params / 1000000.0))
+print('flops: %.3f M, params: %.3f M' % (flops / 2000000.0, params / 1000000.0))
 

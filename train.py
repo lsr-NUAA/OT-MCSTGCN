@@ -3,14 +3,16 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 import warnings
+
 warnings.filterwarnings("ignore")
 from sklearn.metrics import precision_score, recall_score, f1_score, roc_auc_score, accuracy_score, confusion_matrix
 from sklearn.model_selection import KFold
 from torch.utils.data import SubsetRandomSampler, DataLoader
 import warnings
+
 from data_process import ADNI
 from model import STGCN_model
-
+DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 
 
@@ -30,7 +32,6 @@ avg_spe = 0
 avg_recall = 0
 avg_f1 = 0
 avg_auc = 0
-DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 pre_ten = []
 label_ten = []
 gailv_ten = []
@@ -44,15 +45,19 @@ def stest(model, datasets_test):
     labels_all = []
     gailv_all = []
     pro_all = []
-    model.eval()
+    model.eval()  
     for net, data_feas, label in datasets_test:
         net, data_feas, label = net.to(DEVICE), data_feas.to(DEVICE), label.to(DEVICE)
         net = net.float()
         data_feas = data_feas.float()
+
         label = label.long()
         outs = model(net, data_feas)
+
         losss = F.nll_loss(outs, label)
+        # 记录误差
         eval_loss += float(losss)
+        # 记录准确率
         gailv, pred = outs.max(1)
         num_correct = (pred == label).sum()
         acc = int(num_correct) / net.shape[0]
@@ -72,6 +77,7 @@ def stest(model, datasets_test):
     my_auc = roc_auc_score(labels_all, pro_all)
 
     return eval_loss, eval_acc, eval_acc_epoch, precision, recall, f1, my_auc, sensitivity, specificity, pre_all, labels_all, pro_all
+
 
 i = 0
 test_acc = []
@@ -113,11 +119,15 @@ for train_idx, test_idx in KF.split(dataset):
         model.train()
         for ot_net, cheb, label in datasets_train:
             ot_net, cheb, label = ot_net.to(DEVICE), cheb.to(DEVICE), label.to(DEVICE)
+
+
             ot_net = ot_net.float()
             cheb = cheb.float()
             label = label.long()
+
             out = model(ot_net, cheb)  # torch.Size([4, 3])
             loss = F.nll_loss(out, label)
+            # 反向传播
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
@@ -210,5 +220,6 @@ print("auc_std", auc_std)
 print("sens_std", sens_std)
 print("spec_std", spec_std)
 print("*****************************************************")
+
 print(label_ten)
 print(pro_ten)
