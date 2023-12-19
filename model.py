@@ -214,7 +214,7 @@ class TCN(nn.Module):
 # print(out.shape)
 
 
-#############################三明治架构的STGCN#########################
+#############################MCSTGCN#########################
 class san_stgcn(nn.Module):
     def __init__(self, num_of_timesteps, num_of_vertices, num_of_features, num_of_time_filters,
                  num_of_chev_filters, time_conv_kernel, time_conv_strides, k):
